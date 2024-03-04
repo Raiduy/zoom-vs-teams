@@ -2,7 +2,7 @@ $conference_tool_paths = '.\conftool_paths.secret'
 $number_of_runs = 1
 $experiment_length = 10 # in minutes
 $cooldown_length = 5 # in minutes
-
+$variation = 'default'
 
 function GetConfToolPath([string]$conf_tool) {
     $line = (Get-Content $conference_tool_paths | Select-String -Pattern $conf_tool)
@@ -19,7 +19,7 @@ function GetConfToolLink([string]$conf_tool) {
 for ($i = 0; $i -lt $number_of_runs; $i++) {
   foreach ($tool in @('Zoom', 'Teams')) {
     # Create a folder for the experiment
-    $experiment_folder = '.\experiments\' + (Get-Date -Format "yyyy-MM-dd_HH-mm-ss") + '_' + $tool
+    $experiment_folder = '.\experiments\' + (Get-Date -Format "yyyy-MM-dd_HH-mm-ss") + '_' + $tool + "_" + $variation
     New-Item $experiment_folder -ItemType Directory -Force | Out-Null
 
     # Open link from shell https://debug.to/696/open-url-in-browser-in-powershell
