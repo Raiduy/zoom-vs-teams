@@ -1,9 +1,10 @@
 param (
   [string]$experiment_folder = '.\experiments\', 
   [string]$conference_tool_paths = '.\conftool_paths.secret',
-  [int]$number_of_runs = 2,
-  [int]$experiment_length = 10, # in seconds
-  [int]$cooldown_length = 10, # in seconds
+  [string]$tool = 'Zoom', # ['Zoom', 'Teams']
+  [int]$number_of_runs = 10,
+  [int]$experiment_length = 600, # in seconds
+  [int]$cooldown_length = 300, # in seconds
   [string]$variation = 'default',
   [int]$sample_interval = 1 # in seconds,
 )
@@ -11,6 +12,7 @@ param (
 $experiment_config = @"
 experiment_folder: $experiment_folder
 conference_tool_paths: $conference_tool_paths
+tool: $tool
 number_of_runs: $number_of_runs
 experiment_length: $experiment_length
 cooldown_length: $cooldown_length
@@ -100,7 +102,7 @@ try {
   New-Item $experiment_folder -ItemType Directory -Force | Out-Null
 
   for ($i = 0; $i -lt $number_of_runs; $i++) {
-    foreach ($tool in @('Zoom', 'Teams')) {
+    # foreach ($tool in @('Zoom', 'Teams')) {
       # Create a folder for the experiment
       $experiment_folder = '.\experiments\' + (Get-Date -Format "yyyy-MM-dd_HH-mm-ss") + '_' + $tool + "_" + $variation
       New-Item $experiment_folder -ItemType Directory -Force | Out-Null
@@ -145,7 +147,7 @@ try {
 
       Write-Output "Experiment $i $tool ended"
       Sleep-Progress -Seconds $cooldown_length -reason "Cooldown..."
-    }
+    # }
   }
 } finally {
   # Stop PCM and battery status check
