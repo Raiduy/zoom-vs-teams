@@ -20,11 +20,11 @@ The experiment consists of 10 runs for each video conferencing tool, each run la
 ## Experiment Setup
 * Bluetooth, Wi-Fi, and all other background applications are turned off.
 * The laptop is running on battery power.
-* One participant is present in the video conferencing tool, camera on and muted.
+* One participant is present in the video conferencing tool, camera on and unmuted with voices in the background.
 * Volume is set to 0
 * Brightness is set to minimum
+* Battery saver off, and starting with 100% battery.
 * Open tabs:
   - Google Chrome (script accesses the Zoom link to open the Zoom app)
   - VS Code
-  - PowerShell
-  
+  - PowerShell (with always on top option)

@@ -1,5 +1,5 @@
 param (
-  [string]$experiment_folder = '.\experiments\', 
+  [string]$experiment_folder = '.\zoom_default\', 
   [string]$conference_tool_paths = '.\conftool_paths.secret',
   [string]$tool = 'Zoom', # ['Zoom', 'Teams']
   [int]$number_of_runs = 10,
