@@ -18,7 +18,7 @@ The energy consumption is measured using the Intel Performance Counter Monitor (
 The experiment consists of 10 runs for each video conferencing tool, each run lasting for 10 minutes, with 10 minutes of idle time between each run.
 
 ## Experiment Setup
-* Bluetooth, Wi-Fi, and all other background applications are turned off.
+* Bluetooth, and all other background applications are turned off.
 * The laptop is running on battery power.
 * One participant is present in the video conferencing tool, camera on and unmuted with voices in the background.
 * Volume is set to 0
