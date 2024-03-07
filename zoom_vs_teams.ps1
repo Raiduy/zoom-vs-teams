@@ -1,7 +1,7 @@
 param (
-  [string]$experiment_folder = '.\zoom_default\', 
+  [string]$experiment_folder = '.\teams_default\', 
   [string]$conference_tool_paths = '.\conftool_paths.secret',
-  [string]$tool = 'Zoom', # ['Zoom', 'Teams']
+  [string]$tool = 'Teams', # ['Zoom', 'Teams']
   [int]$number_of_runs = 10,
   [int]$experiment_length = 600, # in seconds
   [int]$cooldown_length = 300, # in seconds
@@ -104,10 +104,10 @@ try {
   for ($i = 0; $i -lt $number_of_runs; $i++) {
     # foreach ($tool in @('Zoom', 'Teams')) {
       # Create a folder for the experiment
-      $experiment_folder = '.\experiments\' + (Get-Date -Format "yyyy-MM-dd_HH-mm-ss") + '_' + $tool + "_" + $variation
-      New-Item $experiment_folder -ItemType Directory -Force | Out-Null
+      $out_folder = "$experiment_folder" + (Get-Date -Format "yyyy-MM-dd_HH-mm-ss") + '_' + $tool + "_" + $variation
+      New-Item $out_folder -ItemType Directory -Force | Out-Null
 
-      $experiment_full_path = (Get-Item -LiteralPath $experiment_folder).FullName
+      $experiment_full_path = (Get-Item -LiteralPath $out_folder).FullName
       Write-Output "Experiment folder: $experiment_full_path"
       
       # Open link from shell https://debug.to/696/open-url-in-browser-in-powershell
@@ -140,10 +140,10 @@ try {
       taskkill /F /T /IM $exe
       
       # Get Tool version
-      (Get-Item -LiteralPath $path).VersionInfo | Format-List * -force > $experiment_folder\version.log
+      (Get-Item -LiteralPath $path).VersionInfo | Format-List * -force > $out_folder\version.log
 
       # Save experiment configuration
-      $experiment_config | Out-File -FilePath $experiment_folder\config.txt
+      $experiment_config | Out-File -FilePath $out_folder\config.txt
 
       Write-Output "Experiment $i $tool ended"
       Sleep-Progress -Seconds $cooldown_length -reason "Cooldown..."
