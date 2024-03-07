@@ -2,8 +2,8 @@ param (
   [string]$experiment_folder = '.\experiments\', 
   [string]$conference_tool_paths = '.\conftool_paths.secret',
   [int]$number_of_runs = 2,
-  [int]$experiment_length = 60, # in seconds
-  [int]$cooldown_length = 30, # in seconds
+  [int]$experiment_length = 10, # in seconds
+  [int]$cooldown_length = 10, # in seconds
   [string]$variation = 'default',
   [int]$sample_interval = 1 # in seconds,
 )
@@ -19,6 +19,34 @@ sample_interval: $sample_interval
 
 .\zoom_vs_teams.ps1 -experiment_folder $experiment_folder -conference_tool_paths $conference_tool_paths -number_of_runs $number_of_runs -experiment_length $experiment_length -cooldown_length $cooldown_length -variation $variation -sample_interval $sample_interval
 "@
+
+function Sleep-Progress($seconds, $reason = "Waiting...")
+{
+     <#
+     .SYNOPSIS
+     Function to Sleep-Progress with a progress bar
+     .DESCRIPTION
+     Runs the 'Start-Sleep' command using the with a progress bar. Time is passed to the function in seconds as an argument.
+     .NOTES
+     # Updated from original to include the 'Wait time' in minutes and seconds
+     .EXAMPLE
+     Sleep-Progress 300
+     .LINK
+     https://gist.github.com/evoelker/fcd8dc1563e15a6f8e5e11fdd93880cf
+     https://gist.github.com/ctigeek/bd637eeaeeb71c5b17f4
+     #>
+     
+     $doneDT = (Get-Date).AddSeconds($seconds)
+     while($doneDT -gt (Get-Date)) {
+         $secondsLeft = $doneDT.Subtract((Get-Date)).TotalSeconds
+         $percent = ($seconds - $secondsLeft) / $seconds * 100
+         Write-Progress -Activity "$reason $($([timespan]::fromseconds($seconds)).ToString("ss")) seconds ..." -Status "Waiting..." -SecondsRemaining $secondsLeft -PercentComplete $percent
+         [System.Threading.Thread]::Sleep(500)
+     }
+     Write-Progress -Activity "Waiting $($([timespan]::fromseconds($seconds)).ToString("ss")) seconds ..." -Status "Waiting..." -SecondsRemaining 0 -Completed
+}
+
+
 
 function GetConfToolPath([string]$conf_tool) {
     $line = (Get-Content $conference_tool_paths | Select-String -Pattern $conf_tool)
@@ -87,18 +115,18 @@ try {
       Write-Output "Experiment $i $tool started"
       
       # Wait for the conference tool to start
-      Start-Sleep -Seconds 20
+      Sleep-Progress -Seconds 20 -reason "Waiting for $tool to start..."
       
       if ($tool -eq 'Teams') {
         # Auto join the meeting in Teams
-        python .\teams_autojoin.py
+        python .\teams_autojoin.py 8
       }
       
       # Run Intel PCM for 60 iterations
       $BatteryJob = Start-Job -ScriptBlock $GetBatteryStatus -ArgumentList $experiment_full_path, $sample_interval
       $PCMJob = Start-Job -ScriptBlock $GetPCMStats -ArgumentList $experiment_full_path, $sample_interval
       
-      Start-Sleep -Seconds $experiment_length
+      Sleep-Progress -Seconds $experiment_length -reason "Experiment running..."
 
       # Stop collection jobs
       Stop-Job $PCMJob
@@ -116,7 +144,7 @@ try {
       $experiment_config | Out-File -FilePath $experiment_folder\config.txt
 
       Write-Output "Experiment $i $tool ended"
-      Start-Sleep -Seconds $cooldown_length
+      Sleep-Progress -Seconds $cooldown_length -reason "Cooldown..."
     }
   }
 } finally {
