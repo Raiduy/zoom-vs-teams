@@ -15,10 +15,10 @@ Experiment regarding the laptop energy consumption in video conferencing tools
 The experiment is to measure the energy consumption of the laptop running on battery power while using Zoom and Microsoft Teams for video conferencing.
 The energy consumption is measured using the Intel Performance Counter Monitor (PCM) tool.
 
-The experiment consists of 10 runs for each video conferencing tool, each run lasting for 10 minutes, with 10 minutes of idle time between each run.
+The experiment consists of 10 runs for each video conferencing tool, each run lasting for 10 minutes, with 5 minutes of idle time between each run.
 
 ## Experiment Setup
-* Bluetooth, Wi-Fi, and all other background applications are turned off.
+* Bluetooth, and all other background applications are turned off.
 * The laptop is running on battery power.
 * One participant is present in the video conferencing tool, camera on and unmuted with voices in the background.
 * Volume is set to 0
